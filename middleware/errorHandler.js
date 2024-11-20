@@ -1,6 +1,6 @@
 import { STATUS_CODES } from '../constants.js';
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
   switch (statusCode) {
     case STATUS_CODES.BAD_REQUEST:
@@ -42,9 +42,9 @@ const errorHandler = (err, req, res, next) => {
         statusCode,
         stackTrace: err.stack,
       });
+      break;
     default:
       console.log('All good');
-      break;
   }
 };
 
