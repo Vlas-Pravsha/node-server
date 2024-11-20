@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server",
+  "type": "module",
+  "license": "ISC",
+  "scripts": {
+    "dev": "nodemon server",
+    "start": "node server",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^10.2.9",
+    "nodemon": "^3.1.7",
+    "prettier": "^2.0.5"
+  }
+}
