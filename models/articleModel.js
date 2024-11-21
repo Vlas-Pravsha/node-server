@@ -2,8 +2,19 @@ import mongoose from 'mongoose';
 
 const articleSchema = new mongoose.Schema(
   {
-    content: { type: String, required: true },
-    title: { type: String, required: true },
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

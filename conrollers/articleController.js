@@ -16,8 +16,15 @@ const createArticle = async (req, res) => {
     const { title, content } = req.body;
 
     if (!title || !content) {
-      res.status(400);
-      throw new Error('Title and content are required');
+      return res
+        .status(400)
+        .json({ error: 'Title and content are required' });
+    }
+
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ error: 'User not authenticated' });
     }
 
     const article = await Article.create({
@@ -60,9 +67,7 @@ const updateSingleArticle = async (req, res) => {
   const updatedArticle = await Article.findByIdAndUpdate(
     req.params.id,
     req.body,
-    {
-      new: true,
-    }
+    { new: true }
   );
 
   res.status(200).json(updatedArticle);

@@ -6,6 +6,7 @@ import {
   updateSingleArticle,
   deleteSingleArticle,
 } from '../conrollers/articleController.js';
+
 import validateToken from '../middleware/validateTokenHandler.js';
 
 const router = express.Router();

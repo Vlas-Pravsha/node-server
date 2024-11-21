@@ -7,12 +7,12 @@ const validateToken = (req, res, next) => {
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         res.status(403);
         throw new Error('Invalid token');
       }
-      req.user = user;
+      req.user = decoded.user;
       next();
     });
   }
