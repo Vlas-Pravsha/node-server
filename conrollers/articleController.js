@@ -1,6 +1,19 @@
 import { Article } from '../models/articleModel.js';
 
-const getArticle = async (req, res) => {
+const getAllArticles = async (req, res, next) => {
+  try {
+    const articles = await Article.find().populate(
+      'user_id',
+      'username email'
+    );
+
+    res.status(200).json(articles);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUsersArticle = async (req, res) => {
   const articles = await Article.find({ user_id: req.user.id });
 
   if (!articles) {
@@ -13,12 +26,15 @@ const getArticle = async (req, res) => {
 
 const createArticle = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, description, category, image, user_id, author } =
+      req.body;
 
-    if (!title || !content) {
-      return res
-        .status(400)
-        .json({ error: 'Title and content are required' });
+    // Validate all required fields
+    if (!title || !description || !category || !image || !user_id) {
+      return res.status(400).json({
+        error:
+          'All fields (title, description, category, image, user_id) are required',
+      });
     }
 
     if (!req.user || !req.user.id) {
@@ -29,14 +45,24 @@ const createArticle = async (req, res) => {
 
     const article = await Article.create({
       title,
-      content,
-      user_id: req.user.id,
+      description,
+      category,
+      image,
+      user_id,
+      author: {
+        id: author.id,
+        name: author.name,
+        avatar: author.avatar || '', // Optional avatar
+      },
     });
 
     res.status(201).json(article);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to create the article' });
+    res.status(500).json({
+      error: 'Failed to create the article',
+      details: error.message,
+    });
   }
 };
 
@@ -100,7 +126,8 @@ const deleteSingleArticle = async (req, res) => {
 };
 
 export {
-  getArticle,
+  getAllArticles,
+  getCurrentUsersArticle,
   createArticle,
   getSingleArticle,
   updateSingleArticle,

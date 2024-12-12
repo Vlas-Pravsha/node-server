@@ -6,14 +6,40 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content: {
+    description: {
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
+    isPublic: {
+      type: Boolean,
+      default: true,
+    },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: 'User',
+      required: true,
+    },
+    author: {
+      id: {
+        type: String,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -21,36 +47,6 @@ const articleSchema = new mongoose.Schema(
   }
 );
 
-const userFavoritesSchema = new mongoose.Schema({
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  article_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Article',
-    required: true,
-  },
-});
-
-const articleCategorySchema = new mongoose.Schema({
-  article_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Article',
-    required: true,
-  },
-  category_name: { type: String, required: true },
-});
-
 const Article = mongoose.model('Article', articleSchema);
-const UserFavorites = mongoose.model(
-  'UserFavorites',
-  userFavoritesSchema
-);
-const ArticleCategory = mongoose.model(
-  'ArticleCategory',
-  articleCategorySchema
-);
 
-export { Article, UserFavorites, ArticleCategory };
+export { Article };

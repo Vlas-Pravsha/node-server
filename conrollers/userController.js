@@ -21,7 +21,7 @@ const registerUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username: username,
+      username,
       email,
       password: hashedPassword,
     });
@@ -71,8 +71,56 @@ const loginUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const { username, email, password, userId } = req.body;
+
+    // Найдем пользователя
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404);
+      throw new Error('Пользователь не найден');
+    }
+
+    // Обновление имени пользователя, если предоставлено
+    if (username) {
+      user.username = username;
+    }
+
+    // Обновление email, если предоставлен
+    if (email) {
+      // Проверка, не занят ли email другим пользователем
+      const emailExists = await User.findOne({ email });
+      if (emailExists && emailExists._id.toString() !== userId) {
+        res.status(400);
+        throw new Error('Этот email уже используется');
+      }
+      user.email = email;
+    }
+
+    // Обновление пароля, если предоставлен
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    // Сохраняем обновленного пользователя
+    const updatedUser = await user.save();
+
+    // Возвращаем обновленные данные
+    res.status(200).json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const currentUser = async (req, res) => {
   res.json(req.user);
 };
 
-export { registerUser, loginUser, currentUser };
+export { registerUser, loginUser, currentUser, updateUser };
